@@ -1,0 +1,62 @@
+<template>
+  <div class="image-container" :style="{
+    width: game.image_width + 'px',
+    height: game.image_height + 'px'
+  }">
+    <img 
+      :src="game.image_url" 
+      :width="game.image_width" 
+      :height="game.image_height" 
+      alt="Hidden Object Game" 
+      @click="handleImageClick"
+    />
+    <div v-for="(obj) in game.hidden_objects" :key="obj.x + obj.y" :style="{
+      left: `${obj.x - obj.radius}px`,
+      top: `${obj.y - obj.radius}px`,
+      width: `${obj.radius * 2}px`,
+      height: `${obj.radius * 2}px`,
+      borderRadius: '50%',
+      position: 'absolute',
+      border: '2px solid red',
+      display: obj.found ? 'block' : 'none'
+    }"></div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useGameStore } from '@/stores/gameStore';
+
+const gameStore = useGameStore();
+const { currentGameIndex, games } = storeToRefs(gameStore);
+
+const game = computed(() => games.value[currentGameIndex.value] || {
+  image_url: ''
+});
+
+const handleImageClick = (event) => {
+  const img = event.currentTarget;
+  const wrapperRect = img.getBoundingClientRect();
+  const offsetX = event.clientX - wrapperRect.left;
+  const offsetY = event.clientY - wrapperRect.top;
+
+  gameStore.handleImageClick({ offsetX, offsetY });
+};
+</script>
+
+<style scoped>
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.image-container img {
+  display: block;
+}
+
+.image-container div {
+  pointer-events: none;
+  /* Ensure the overlay doesn't interfere with image clicks */
+}
+</style>
