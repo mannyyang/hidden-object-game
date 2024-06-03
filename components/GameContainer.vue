@@ -1,6 +1,8 @@
 <template>
   <div>
     <button @click="toggleMode">{{ modeText }}</button>
+    <button @click="prevGame">Previous</button>
+    <button @click="nextGame">Next</button>
     <div class="image-wrapper">
       <ImageContainer />
     </div>
@@ -20,6 +22,14 @@ const modeText = computed(() => {
 
 const toggleMode = () => {
   gameStore.toggleMode();
+};
+
+const nextGame = () => {
+  gameStore.nextGame();
+};
+
+const prevGame = () => {
+  gameStore.prevGame();
 };
 
 onMounted(() => {

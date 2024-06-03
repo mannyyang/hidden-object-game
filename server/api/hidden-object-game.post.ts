@@ -18,6 +18,15 @@ export default defineEventHandler(async (event) => {
 
   const collection_name = "hidden_object_game";
 
+  // Remove the found property from the hidden objects.
+  const updatedHiddenObjects = hidden_objects.map((circle: any) => {
+    return {
+      x: circle.x,
+      y: circle.y,
+      radius: circle.radius,
+    };
+  });
+
   try {
     let results: any[] = [];
     if (id) {
@@ -36,19 +45,19 @@ export default defineEventHandler(async (event) => {
       // Update existing item
       await client.request(
         updateItem(collection_name, id, {
-          hidden_objects,
+          updatedHiddenObjects,
           image_url,
           image_width,
           image_height,
         })
       );
 
-      return { success: true, hidden_objects };
+      return { success: true, updatedHiddenObjects };
     } else {
       // Create new item
       const newItem = await client.request(
         createItem(collection_name, {
-          hidden_objects,
+          updatedHiddenObjects,
           image_url,
           image_width,
           image_height,
@@ -58,7 +67,7 @@ export default defineEventHandler(async (event) => {
       return {
         success: true,
         id: newItem.id,
-        hidden_objects: newItem.hidden_objects,
+        hidden_objects: newItem.updatedHiddenObjects,
       };
     }
   } catch (error: any) {

@@ -1,16 +1,16 @@
 <template>
   <div class="image-container" :style="{
-    width: game.image_width + 'px',
-    height: game.image_height + 'px'
+    width: game?.image_width + 'px',
+    height: game?.image_height + 'px'
   }">
     <img 
-      :src="game.image_url" 
-      :width="game.image_width" 
-      :height="game.image_height" 
+      :src="game?.image_url" 
+      :width="game?.image_width" 
+      :height="game?.image_height" 
       alt="Hidden Object Game" 
       @click="handleImageClick"
     />
-    <div v-for="(obj) in game.hidden_objects" :key="obj.x + obj.y" :style="{
+    <div v-for="(obj) in game?.hidden_objects" :key="obj.x + obj.y" :style="{
       left: `${obj.x - obj.radius}px`,
       top: `${obj.y - obj.radius}px`,
       width: `${obj.radius * 2}px`,
@@ -24,16 +24,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useGameStore } from '@/stores/gameStore';
 
 const gameStore = useGameStore();
-const { currentGameIndex, games } = storeToRefs(gameStore);
-
-const game = computed(() => games.value[currentGameIndex.value] || {
-  image_url: ''
-});
+const { game } = storeToRefs(gameStore);
 
 const handleImageClick = (event) => {
   const img = event.currentTarget;
