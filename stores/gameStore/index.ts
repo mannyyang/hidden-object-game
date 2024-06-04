@@ -12,13 +12,14 @@ export const useGameStore = defineStore("game", {
       date_updated: "",
       image_width: 0,
       image_url: "",
-      image_height: 0
+      image_height: 0,
     }),
     mode: ref<"playing" | "saving">("playing"),
     score: ref(0),
     totalHiddenObjects: ref(0),
     foundCircles: ref<HiddenObject[]>([]),
     offset: ref(0),
+    total: ref(0),
   }),
   actions: {
     async loadGame(offset = 0) {
@@ -29,6 +30,7 @@ export const useGameStore = defineStore("game", {
         const data = await response.json();
         if (data.success) {
           this.game = data.games[0];
+          this.total = data.total;
 
           // Default hidden_objects to an empty array if it's not present
           this.game.hidden_objects = this.game.hidden_objects || [];
@@ -43,16 +45,22 @@ export const useGameStore = defineStore("game", {
       }
     },
     toggleMode() {
-      this.mode = this.mode === "playing" ? "saving" : "playing";
+      if (this.mode === "saving") {
+        this.mode = "playing";
+        // Clear found circles when switching to playing mode
+        this.foundCircles = [];
+      } else {
+        this.mode = "saving";
+      }
       this.updateHiddenObjectsVisibility();
     },
     nextGame() {
-      this.loadGame(this.offset + 1);
+      if (this.offset > 0) {
+        this.loadGame(--this.offset);
+      }
     },
     prevGame() {
-      if (this.offset > 0) {
-        this.loadGame(this.offset - 1);
-      }
+      this.loadGame(++this.offset);
     },
     async saveGame(game: Game) {
       try {
@@ -89,7 +97,7 @@ export const useGameStore = defineStore("game", {
     },
     checkCircle(x: number, y: number) {
       if (this.game && this.game.hidden_objects) {
-        for (const circle of this.game?.hidden_objects) {
+        for (const circle of this.game.hidden_objects) {
           const dx = x - circle.x;
           const dy = y - circle.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
@@ -104,7 +112,7 @@ export const useGameStore = defineStore("game", {
     },
     updateHiddenObjectsVisibility() {
       if (this.game) {
-        const hiddenObjects = this.game?.hidden_objects || [];
+        const hiddenObjects = this.game.hidden_objects || [];
         hiddenObjects.forEach((obj) => {
           obj.found = this.mode === "saving" || obj.found;
         });

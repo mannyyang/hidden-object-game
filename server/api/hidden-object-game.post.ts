@@ -45,10 +45,8 @@ export default defineEventHandler(async (event) => {
       // Update existing item
       await client.request(
         updateItem(collection_name, id, {
-          updatedHiddenObjects,
-          image_url,
-          image_width,
-          image_height,
+          ...body,
+          hidden_objects: updatedHiddenObjects,
         })
       );
 
@@ -57,17 +55,15 @@ export default defineEventHandler(async (event) => {
       // Create new item
       const newItem = await client.request(
         createItem(collection_name, {
-          updatedHiddenObjects,
-          image_url,
-          image_width,
-          image_height,
+          ...body,
+          hidden_objects: updatedHiddenObjects,
         })
       );
 
       return {
         success: true,
         id: newItem.id,
-        hidden_objects: newItem.updatedHiddenObjects,
+        hidden_objects: newItem.hidden_objects,
       };
     }
   } catch (error: any) {

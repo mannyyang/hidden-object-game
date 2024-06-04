@@ -4,7 +4,7 @@
     height: game?.image_height + 'px'
   }">
     <img 
-      :src="game?.image_url" 
+      :src="`http://localhost:8055/assets/${game?.image}`" 
       :width="game?.image_width" 
       :height="game?.image_height" 
       alt="Hidden Object Game" 

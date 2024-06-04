@@ -9,15 +9,15 @@ const client = createDirectus(process.env.DIRECTUS_PUBLIC_URL || "").with(
 export default defineEventHandler(async (event) => {
   const collectionName = "hidden_object_game";
   const query = getQuery(event);
-  const page = query.page ? parseInt(query.page, 10) : 1;
   const limit = query.limit ? parseInt(query.limit, 10) : 10;
-  const offset = (page - 1) * limit;
+  const offset = query.offset ? parseInt(query.offset, 10) : 0;
 
   try {
     const results = await client.request(
       readItems(collectionName, {
         limit,
         offset,
+        sort: ['-date_created']
       })
     );
 
@@ -27,14 +27,13 @@ export default defineEventHandler(async (event) => {
         aggregate: { count: "*" },
       })
     );
-    console.log(total);
 
     if (results?.length > 0) {
       return {
         success: true,
         games: results,
-        // total: results.meta.total_count,
-        page,
+        total: total[0].count,
+        offset,
         limit,
       };
     } else {
