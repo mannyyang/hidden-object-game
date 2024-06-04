@@ -22,7 +22,7 @@ const circleStyle = computed(() => ({
 <style scoped>
 .circle {
   position: absolute;
-  border: 4px solid red;
+  border: 5px solid red;
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }

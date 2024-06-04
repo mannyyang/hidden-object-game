@@ -4,7 +4,7 @@
     height: game?.image_height + 'px'
   }">
     <img 
-      :src="`http://localhost:8055/assets/${game?.image}`" 
+      :src="`${directusUrl}/assets/${game?.image}`" 
       :width="game?.image_width" 
       :height="game?.image_height" 
       alt="Hidden Object Game" 
@@ -17,7 +17,7 @@
       height: `${obj.radius * 2}px`,
       borderRadius: '50%',
       position: 'absolute',
-      border: '2px solid red',
+      border: '5px solid red',
       display: obj.found ? 'block' : 'none'
     }"></div>
   </div>
@@ -26,6 +26,14 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useGameStore } from '@/stores/gameStore';
+
+const {
+  public: {
+    directus: {
+      url: directusUrl
+    }
+  }
+} = useRuntimeConfig();
 
 const gameStore = useGameStore();
 const { game } = storeToRefs(gameStore);
