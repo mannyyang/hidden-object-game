@@ -87,7 +87,7 @@ export const useGameStore = defineStore("game", {
         const newCircle = {
           x: offsetX,
           y: offsetY,
-          radius: 20, // Example radius
+          radius: 40, // Example radius
           found: true,
         };
         this.addCircle(newCircle);

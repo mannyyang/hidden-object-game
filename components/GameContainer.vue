@@ -1,7 +1,7 @@
 <template>
   <div class="game-container">
     <div class="controls-top">
-      <UButton @click="toggleMode">{{ modeText }}</UButton>
+      <!-- <UButton @click="toggleMode">{{ modeText }}</UButton> -->
     </div>
     <div class="description">
       {{ gameDescription }}
@@ -15,6 +15,9 @@
         {{ foundObjects }} / {{ totalObjects }} Objects Found
       </div>
       <UButton @click="nextGame" :disabled="offset === 0">Next</UButton>
+    </div>
+    <div class="instructions">
+      Click on the hidden objects in the image to find them.
     </div>
   </div>
 </template>
@@ -65,7 +68,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 40px;
 }
 
 .controls-top {
@@ -102,5 +104,11 @@ onMounted(() => {
 
 .controls-bottom button:last-child {
   margin-left: auto;
+}
+
+.instructions {
+  margin-top: 20px;
+  font-size: 1em;
+  text-align: center;
 }
 </style>
